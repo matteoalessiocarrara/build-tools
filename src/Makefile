@@ -8,4 +8,5 @@ CHANGELOG_FILE = $(DOC_DIR)/CHANGELOG.md
 
 
 changelog:
+	mkdir --parents $(DOC_DIR)
 	git changelog > $(CHANGELOG_FILE)
