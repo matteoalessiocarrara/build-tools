@@ -14,7 +14,10 @@ AUTHORS_FILE = $(DOC_DIR)/AUTHORS.md
 # 3: modificare "clean"
 
 
-all: authors changelog
+all: doc
+
+
+doc: authors changelog
 
 
 authors:
