@@ -28,5 +28,9 @@ fi
 
 current_branch="$(git symbolic-ref HEAD --short)"
 patch_branch="$1"
+diff="$()"
 
-git diff --full-index "$current_branch" "$patch_branch"  | git apply
+if [[ -n "$diff" ]]
+then
+	echo diff | git apply
+fi

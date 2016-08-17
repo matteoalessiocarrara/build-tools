@@ -18,11 +18,25 @@
 #  MA 02110-1301, USA.
 #
 
+set -e -u
 
-if [ -z "$1" ]
+if [[ $# -lt 1 ]]
 then
 	echo Specificare il numero di versione
 	exit 1
 fi
 
-git tag -am "Nuova versione (vedere il changelg)" $1
+
+git checkout -B release
+
+git apply-branch master
+git add .
+git commit -m "Sincronizzazione con master"
+
+repo-lint $(git rev-parse --show-toplevel)
+git add .
+git commit -m "Ripulito repo"
+
+git tag -m "Nuova versione" $1
+
+git checkout master
