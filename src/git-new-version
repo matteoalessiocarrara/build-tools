@@ -20,23 +20,44 @@
 
 set -e -u
 
-if [[ $# -lt 1 ]]
+if [[ $# -lt 3 ]]
 then
-	echo Specificare il numero di versione
+	echo Uso: ftp_user ftp_pass ftp_hostname versione
 	exit 1
 fi
 
 
-git checkout -B release
+FTP_USER=$1
+FTP_PASS=$2
+FTP_HOSTNAME=$3
+VERSION=$4
+
+REPO_PATH=$(git rev-parse --show-toplevel)
+REPO_NAME=$(basename $REPO_PATH)
+TARBALL_FILENAME=$REPO_NAME-$VERSION.tar.xz
+FTP_DIR=public_html
+
+git tag -m "Nuova versione" $VERSION master
+git push --follow-tags origin master
+
+git checkout release
 
 git apply-branch master
 git add .
 git commit -m "Sincronizzazione con master"
 
-repo-lint $(git rev-parse --show-toplevel)
+repo-lint $REPO_PATH
 git add .
 git commit -m "Ripulito repo"
 
-git tag -m "Nuova versione" $1
+git push origin release
+
+git archive --format=tar release | xz -6 > $TARBALL_FILENAME
+ncftpput -v -u $FTP_USER -p $FTP_PASS $FTP_HOSTNAME $FTP_DIR $TARBALL_FILENAME
+rm ./$TARBALL_FILENAME
 
 git checkout master
+
+echo
+echo Github: $(sed "s/.git$//g" <<< $(git remote get-url origin))/tree/release
+echo Download: $FTP_HOSTNAME/$TARBALL_FILENAME
