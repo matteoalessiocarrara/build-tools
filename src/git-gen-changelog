@@ -17,4 +17,4 @@
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #  MA 02110-1301, USA.
 #
-git log --first-parent --pretty=format:"# [%ci] %H%n## %s%n%n%b%n" master
+git log --first-parent --pretty=format:"# %ci%n__%s__  %nCommit _%H_%n%n%b%n" master
